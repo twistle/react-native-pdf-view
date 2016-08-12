@@ -6,9 +6,9 @@ import android.content.Context;
 import android.util.Log;
 import android.graphics.PointF;
 
-import com.joanzapata.pdfview.PDFView;
-import com.joanzapata.pdfview.listener.OnPageChangeListener;
-import com.joanzapata.pdfview.listener.OnLoadCompleteListener;
+import com.github.barteksc.pdfviewer.PDFView;
+import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
+import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
 
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
