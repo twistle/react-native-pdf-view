@@ -1,6 +1,12 @@
 package com.keyee.pdfview;
 
 import java.io.File;
+import java.io.InputStream;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.net.MalformedURLException;
+import java.net.HttpURLConnection;
 
 import android.content.Context;
 import android.util.Log;
@@ -30,6 +36,7 @@ public class PDFViewManager extends SimpleViewManager<PDFView> implements OnPage
     Integer pageNumber = 1;
     String assetName;
     String filePath;
+    String url;
 
 
     public PDFViewManager(ReactApplicationContext reactContext){
@@ -80,17 +87,41 @@ public class PDFViewManager extends SimpleViewManager<PDFView> implements OnPage
                 .onLoad(this)
                 .load();
         } else if (filePath != null){
-            //fromFile,fromAsset
-            //pdfView.fromAsset(fileName)
             File pdfFile = new File(filePath);
             pdfView.fromFile(pdfFile)
                 .defaultPage(pageNumber)
-                //.showMinimap(false)
-                //.enableSwipe(true)
                 .swipeVertical(true)
                 .onPageChange(this)
                 .onLoad(this)
                 .load();
+        } else if (url != null){
+            URL streamUrl;
+            HttpURLConnection conn;
+
+            try {
+                streamUrl = new URL(url);
+            } catch (MalformedURLException e) {
+                return;
+            }
+            try {
+                conn = (HttpURLConnection) streamUrl.openConnection();
+            } catch (IOException e) {
+                return;
+            }
+
+            try {
+                InputStream is = new BufferedInputStream(conn.getInputStream());
+                pdfView.fromInputStream(url, is)
+                    .defaultPage(pageNumber)
+                    .swipeVertical(true)
+                    .onPageChange(this)
+                    .onLoad(this)
+                    .load();
+            } catch (IOException e) {
+                return;
+            } finally {
+                conn.disconnect();
+            }
         }
     }
 
@@ -102,7 +133,6 @@ public class PDFViewManager extends SimpleViewManager<PDFView> implements OnPage
 
     @ReactProp(name = "pageNumber")
     public void setPageNumber(PDFView view, Integer pageNum) {
-        //view.setPageNumber(pageNum);
         if (pageNum > 0){
             pageNumber = pageNum;
             display(false);
@@ -117,8 +147,7 @@ public class PDFViewManager extends SimpleViewManager<PDFView> implements OnPage
 
     @ReactProp(name = "src")
     public void setSrc(PDFView view, String src) {
-        //view.setSource(src);
-        filePath = src;
+        url = src;
         display(false);
     }
 

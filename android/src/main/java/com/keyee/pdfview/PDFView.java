@@ -25,7 +25,7 @@ public class PDFView implements ReactPackage {
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-        List<ViewManager> modules = new ArrayList<>();
+        List<ViewManager> modules = new ArrayList<ViewManager>();
         modules.add(new PDFViewManager(reactContext));
         return modules;
     }
